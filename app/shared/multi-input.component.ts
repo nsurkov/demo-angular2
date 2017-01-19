@@ -1,15 +1,16 @@
 import { Component, OnInit, forwardRef, Input, Output, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
 import { AbstractControl, ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
+import {noop} from './utils';
 
 @Component({
-  selector: 'counter',
+  selector: 'multi-input',
   template: `<button (click)="inc()">+</button>{{counter}}<button (click)="dec()">-</button>`,
   providers: [
-    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => CounterComponent), multi: true },
-    { provide: NG_VALIDATORS, useExisting: forwardRef(() => CounterComponent), multi: true }
+    { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MultiInputComponent), multi: true },
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => MultiInputComponent), multi: true }
   ]
 })
-export class CounterComponent implements ControlValueAccessor, Validator, OnChanges {
+export class MultiInputComponent implements ControlValueAccessor, Validator, OnChanges {
 
   counter: number = 0;
   @Input() max: number | string;
@@ -63,21 +64,21 @@ export class CounterComponent implements ControlValueAccessor, Validator, OnChan
   }
 
   //Validator
-  validateFn:any = () => {};
+  validateFn: Function = noop;
 
   validate(ctrl: AbstractControl) : {[key: string]: any} {
     return this.validateFn(ctrl);
   }
 
-  onValidatorChange: any = () => {};
+  onValidatorChange: Function = noop;
 
   registerOnValidatorChange(fn: () => void) : void {
     this.onValidatorChange = fn;
   }
 
   //ControlValueAccessor
-  onChanged : (_: any) => void = () => {};
-  onTouched : () => void = () => {};
+  onChanged : Function = noop;
+  onTouched : Function = noop;
   writeValue(value: any) : void {
       this.value = value;
   }

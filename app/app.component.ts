@@ -21,11 +21,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   <form [formGroup]="form">
     <div>
       <label>Tune value:</label>
-      <counter
+      <counter-input
         formControlName="counter"
         [max]="maxValue"
         [min]="minValue"
-      ></counter>
+      ></counter-input>
     </div>
     <div>
       <p *ngIf="!form.valid">Form invalid value</p>
@@ -37,11 +37,11 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   <h2>Standalone</h2>
   <div>
     <label>Tune value:</label>
-    <counter
+    <counter-input
       [max]="maxValue"
       [min]="minValue"
       [(value)]="counterValue"
-    ></counter>
+    ></counter-input>
   </div>
   <div>
     <p>{{ counterValue }}</p>
