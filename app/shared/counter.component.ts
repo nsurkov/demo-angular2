@@ -62,7 +62,7 @@ export class CounterComponent implements ControlValueAccessor, Validator, OnChan
     }
   }
 
-  //validator
+  //Validator
   validateFn:any = () => {};
 
   validate(ctrl: AbstractControl) : {[key: string]: any} {
