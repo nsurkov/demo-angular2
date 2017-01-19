@@ -1,1 +1,2 @@
-Content will be later
+npm install
+npm start
