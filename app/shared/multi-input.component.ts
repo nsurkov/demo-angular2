@@ -1,16 +1,41 @@
-import { Component, OnInit, forwardRef, Input, Output, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
-import { AbstractControl, ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
+import {
+  Component, OnInit, forwardRef, Input, Output,
+  EventEmitter, OnChanges, SimpleChange,
+  TemplateRef, ViewContainerRef
+ } from '@angular/core';
+
+import {
+  AbstractControl, ControlValueAccessor, Validator,
+  NG_VALUE_ACCESSOR, NG_VALIDATORS
+} from '@angular/forms';
+
 import {noop} from './utils';
 
 @Component({
-  selector: 'multi-input',
+  selector: 'my-multi-input',
+  /*template: `
+    <div>
+      <input *ngFor="#p of parts; #idx = index"
+        [name]="name"
+        [disabled]="disabled"
+        [type]="p.getInputType(d.disabled)"
+        [maxlength]="p.size" />
+        [(ngModel)]="p.value"
+        (blur)="onBlurHandler($event)"
+        (focus)="onFocusHandler($event)"
+        (change)="onChangeHandler()"
+        (keydown)="onKeyHandler($event, idx)"
+        <span ng-repeat-end></span>
+    </div>
+    <div></div>
+  `,*/
   template: `<button (click)="inc()">+</button>{{counter}}<button (click)="dec()">-</button>`,
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => MultiInputComponent), multi: true },
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => MultiInputComponent), multi: true }
   ]
 })
-export class MultiInputComponent implements ControlValueAccessor, Validator, OnChanges {
+export class MultiInputComponent implements ControlValueAccessor, Validator, OnInit, OnChanges {
 
   counter: number = 0;
   @Input() max: number | string;
@@ -25,7 +50,13 @@ export class MultiInputComponent implements ControlValueAccessor, Validator, OnC
   }
 
   @Output() valueChange = new EventEmitter<number>();
+/*
+  constructor(
+    private templateRef: TemplateRef<any>,
+    private viewContainer: ViewContainerRef
+  ){
 
+  }*/
   private emitValueChange() {
     this.onChanged(this.value);
     this.valueChange.emit(this.value);
@@ -39,6 +70,10 @@ export class MultiInputComponent implements ControlValueAccessor, Validator, OnC
   dec(): void {
     this.counter--;
     this.emitValueChange();
+  }
+
+  ngOnInit() {
+
   }
 
   //OnChanges

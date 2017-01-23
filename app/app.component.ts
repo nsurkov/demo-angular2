@@ -1,11 +1,54 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'my-app',
   template: `
-
-  <h2>Parameters</h2>
+<div>
+  <h2>Input control</h2>
+  <div>
+    <h3>As number</h3>
+    <my-input name="number-input"
+      [(ngModel)]="numberInputValue"
+      type="number"
+      #num_ctrl="ngModel"
+      required
+      [label]="'Number input'"
+      ></my-input>
+    <p>{{ numberInputValue }}</p>
+    <p>Is valid? {{ num_ctrl.valid }}</p>
+  </div>
+  <div>
+    <h3>As text</h3>
+    <my-input name="text-input"
+      [(ngModel)]="textInputValue"
+      type="text"
+      #text_ctrl="ngModel"
+      required
+      [label]="'Text input'"
+      ></my-input>
+    <p>{{ textInputValue }}</p>
+    <p>Is valid? {{ text_ctrl.valid }}</p>
+  </div>
+  <div>
+    <h3>As text area</h3>
+    <my-input name="text-area"
+      [(ngModel)]="textAInputValue"
+      type="textarea"
+      #textA_ctrl="ngModel"
+      required
+      [label]="'Text area input'"
+      ></my-input>
+    <p>{{ textAInputValue }}</p>
+    <p>Is valid? {{ textA_ctrl.valid }}</p>
+  </div>
+  </div>
+<!--
+[errors]="displayErrors(nctrl)"
+-->
+<div>
+  <h2>Counter input control</h2>
+  <h3>Parameters</h3>
   <div>
   <div>
     <label>Min value:</label>
@@ -17,15 +60,15 @@ import { FormBuilder, FormGroup } from '@angular/forms';
   </div>
   </div>
 
-  <h2>Inside Form</h2>
+  <h3>Inside Form</h3>
   <form [formGroup]="form">
     <div>
       <label>Tune value:</label>
-      <counter-input
+      <my-counter-input
         formControlName="counter"
         [max]="maxValue"
         [min]="minValue"
-      ></counter-input>
+      ></my-counter-input>
     </div>
     <div>
       <p *ngIf="!form.valid">Form invalid value</p>
@@ -34,17 +77,18 @@ import { FormBuilder, FormGroup } from '@angular/forms';
     </div>
   </form>
 
-  <h2>Standalone</h2>
+  <h3>Standalone</h3>
   <div>
     <label>Tune value:</label>
-    <counter-input
+    <my-counter-input
       [max]="maxValue"
       [min]="minValue"
       [(value)]="counterValue"
-    ></counter-input>
+    ></my-counter-input>
   </div>
   <div>
     <p>{{ counterValue }}</p>
+  </div>
   </div>
   `
 })
@@ -53,13 +97,20 @@ export class AppComponent  implements OnInit {
   counterValue: number = 10;
   minValue: number = 0;
   maxValue:number = 12;
+  textInputValue: string ="";
+  textAInputValue: string ="";
 
+  numberInputValue: number;
   constructor(private fb: FormBuilder) {}
+  displayErrors(ngModel: NgModel): string[] {
 
+    return ngModel.valid ? ["Valid"]:["Invalid"];
+  }
   ngOnInit() {
     this.form = this.fb.group({
       counter: this.counterValue
     });
   }
-
+  name: string = '';
+   setValue() { this.name = 'Nancy'; }
 }

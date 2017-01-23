@@ -3,7 +3,7 @@ import { AbstractControl, ControlValueAccessor, Validator, NG_VALUE_ACCESSOR, NG
 import {noop} from './utils';
 
 @Component({
-  selector: 'counter-input',
+  selector: 'my-counter-input',
   template: `<button (click)="inc()">+</button>{{counter}}<button (click)="dec()">-</button>`,
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => CounterInputComponent), multi: true },
@@ -43,13 +43,13 @@ export class CounterInputComponent implements ControlValueAccessor, Validator, O
 
   //OnChanges
   ngOnChanges(changes: {[key: string]: SimpleChange}) {
-    if(changes["max"] || changes["min"]) {
+    if(changes["max"] != null || changes["min"] != null) {
       this.validateFn = (ctrl: AbstractControl) => {
         let errors = {};
         let given = ctrl.value;
         let max = +this.max;
-        let min = -this.min;
-        if(max && given > max || min && given < min) {
+        let min = +this.min;
+        if((max != null && given > max) || (min != null && given < min)) {
           errors["range"] = {
             given: given,
             max: max,
