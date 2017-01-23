@@ -1,4 +1,4 @@
-import { Component, OnInit, OnAfterViewInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
 
 @Component({
@@ -94,7 +94,7 @@ import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
   </div>
   `
 })
-export class AppComponent  implements OnInit, OnAfterViewInit {
+export class AppComponent  implements OnInit, AfterViewInit {
   form:FormGroup;
   counterValue: number = 10;
   minValue: number = 0;
