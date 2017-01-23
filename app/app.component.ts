@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnAfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
 
 @Component({
@@ -14,9 +14,11 @@ import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
       #num_ctrl="ngModel"
       required
       [label]="'Number input'"
+      [errors]="displayErrors(num_ctrl)"
       ></my-input>
     <p>{{ numberInputValue }}</p>
     <p>Is valid? {{ num_ctrl.valid }}</p>
+    <pre>{{ err | json }}</pre>
   </div>
   <div>
     <h3>As text</h3>
@@ -92,7 +94,7 @@ import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
   </div>
   `
 })
-export class AppComponent  implements OnInit {
+export class AppComponent  implements OnInit, OnAfterViewInit {
   form:FormGroup;
   counterValue: number = 10;
   minValue: number = 0;
@@ -101,16 +103,19 @@ export class AppComponent  implements OnInit {
   textAInputValue: string ="";
 
   numberInputValue: number;
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
   displayErrors(ngModel: NgModel): string[] {
-
-    return ngModel.valid ? ["Valid"]:["Invalid"];
+  let errors: string[] = [];
+  errors = ngModel.valid ? ["Valid"]:["Invalid"];
+    return errors;
   }
   ngOnInit() {
     this.form = this.fb.group({
       counter: this.counterValue
     });
   }
-  name: string = '';
-   setValue() { this.name = 'Nancy'; }
+  ngAfterViewInit() {
+    this.cdr.detectChanges();
+  }
+
 }

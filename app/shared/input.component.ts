@@ -133,7 +133,7 @@ export class InputComponent implements ControlValueAccessor, Validator, OnChange
   set errors(errors: string[]) {
     this._errors = errors || [];
   }
-  @Output() errorsChange = new EventEmitter<string[]>();
+  //@Output() errorsChange = new EventEmitter<string[]>();
   @Output() valueChange = new EventEmitter<number | string>();
   @Output() blur = new EventEmitter<FocusEvent>();
   @Output() focus = new EventEmitter<FocusEvent>();
