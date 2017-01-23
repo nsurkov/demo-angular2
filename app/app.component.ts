@@ -45,9 +45,6 @@ import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
     <p>Is valid? {{ textA_ctrl.valid }}</p>
   </div>
   </div>
-<!--
-[errors]="displayErrors(nctrl)"
--->
 <div>
   <h2>Counter input control</h2>
   <h3>Parameters</h3>
@@ -105,8 +102,8 @@ export class AppComponent  implements OnInit, AfterViewInit {
   numberInputValue: number;
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
   displayErrors(ngModel: NgModel): string[] {
-  let errors: string[] = [];
-  errors = ngModel.valid ? ["Valid"]:["Invalid"];
+    let errors: string[] = [];
+    errors = ngModel.valid ? ["Valid"]:["Invalid"];
     return errors;
   }
   ngOnInit() {

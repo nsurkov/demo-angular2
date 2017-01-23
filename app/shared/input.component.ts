@@ -6,7 +6,7 @@ import {
   AbstractControl, ControlValueAccessor, Validator,
   NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
-import {noop, indent, parseNumber} from './utils';
+import {noop, identity, parseNumber} from './utils';
 
 const NUMBER_KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", "+", "-"];
 
@@ -25,6 +25,7 @@ function filterNumericKeys(event: KeyboardEvent) {
       <div class="layout-row">
         <div class="input-wrapper">
         <input *ngIf="type !== 'textarea'"
+          #input
           [attr.max]="max"
           [attr.maxlength]="maxlength"
           [attr.min]="min"
@@ -40,6 +41,7 @@ function filterNumericKeys(event: KeyboardEvent) {
           (blur)="onBlur($event)"
           (change)="onChange($event)">
         <textarea *ngIf="type === 'textarea'"
+            #input
             [attr.max]="max"
             [attr.maxlength]="maxlength"
             [attr.min]="min"
@@ -65,8 +67,8 @@ function filterNumericKeys(event: KeyboardEvent) {
 })
 export class InputComponent implements ControlValueAccessor, Validator, OnChanges {
 
-  parseValueFn = indent;
-  filterKeysFn = indent;
+  parseValueFn = identity;
+  filterKeysFn = identity;
   _type: string;
   _value: string | number;
   _errors: string[];
@@ -97,8 +99,8 @@ export class InputComponent implements ControlValueAccessor, Validator, OnChange
       this.filterKeysFn = filterNumericKeys;
     }
     else {
-      this.parseValueFn = indent;
-      this.filterKeysFn = indent;
+      this.parseValueFn = identity;
+      this.filterKeysFn = identity;
     }
   }
 
@@ -120,7 +122,7 @@ export class InputComponent implements ControlValueAccessor, Validator, OnChange
 
   @HostListener('click')
   setFocus() {
-    //this._renderer.invokeElementMethod(this._inputEl.nativeElement, 'focus');
+    this._renderer.invokeElementMethod(this._inputEl.nativeElement, 'focus');
   }
   hasFocus(): boolean {
     return this._focused;
@@ -131,9 +133,12 @@ export class InputComponent implements ControlValueAccessor, Validator, OnChange
     return this._errors;
   }
   set errors(errors: string[]) {
-    this._errors = errors || [];
+    if(errors !== this._errors) {
+      this._errors = errors || [];
+      this.errorsChange.emit(this.errors);
+    }
   }
-  //@Output() errorsChange = new EventEmitter<string[]>();
+  @Output() errorsChange = new EventEmitter<string[]>(true);
   @Output() valueChange = new EventEmitter<number | string>();
   @Output() blur = new EventEmitter<FocusEvent>();
   @Output() focus = new EventEmitter<FocusEvent>();
