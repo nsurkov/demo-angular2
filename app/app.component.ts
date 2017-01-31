@@ -7,6 +7,19 @@ import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
 <div>
   <h2>Input control</h2>
   <div>
+    <h3>As phone</h3>
+    <my-phone-input name="text-input"
+      [(ngModel)]="phoneInputValue"
+      type="text"
+      #phone_ctrl="ngModel"
+      required
+      [label]="'Text input'"
+      ></my-phone-input>
+    <p>{{ phoneInputValue }}</p>
+    <p>Is valid? {{ phone_ctrl.valid }}</p>
+  </div>
+
+  <div>
     <h3>As number</h3>
     <my-input name="number-input"
       [(ngModel)]="numberInputValue"
@@ -99,7 +112,7 @@ export class AppComponent  implements OnInit, AfterViewInit {
   maxValue:number = 12;
   textInputValue: string ="";
   textAInputValue: string ="";
-
+  phoneInputValue: string = "";
   numberInputValue: number;
   constructor(private fb: FormBuilder, private cdr: ChangeDetectorRef) {}
   displayErrors(ngModel: NgModel): string[] {

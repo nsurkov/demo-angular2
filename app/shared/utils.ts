@@ -15,6 +15,12 @@ export function filterNumericKeys(event: KeyboardEvent) {
     event.stopPropagation();
   }
 }
+export function onlyDigits(value: string): boolean {
+  return true;
+}
+export function formatPhone(value: string): string {
+  return value;
+}
 
 export const KEY_CODE = {
   LEFT_ARROW:37,
