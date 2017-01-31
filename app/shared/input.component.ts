@@ -6,24 +6,12 @@ import {
   AbstractControl, ControlValueAccessor, Validator,
   NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
 
-import {noop, identity, parseNumber} from './utils';
-
-const NUMBER_KEYS = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ".", "+", "-"];
-
-function filterNumericKeys(event: KeyboardEvent) {
-  if (NUMBER_KEYS.indexOf(event.key) === -1) {
-    event.preventDefault();
-    event.stopPropagation();
-  }
-}
+import {noop, identity, parseNumber, NUMBER_KEYS, filterNumericKeys} from './utils';
 
 @Component({
   selector: 'my-input',
   template: `
-    <div class="input-container">
-      <label class="no-float">{{label}}</label>
-      <div class="layout-row">
-        <div class="input-wrapper">
+    <my-input-layout [label]="label" [errors]="errors" [note]="note" [disabled]="disabled">
         <input *ngIf="type !== 'textarea'"
           #input
           [attr.max]="max"
@@ -34,7 +22,6 @@ function filterNumericKeys(event: KeyboardEvent) {
           [readonly]="readonly"
           [required]="required"
           [disabled]="disabled"
-          [ngClass]="inputClass"
           [type]="type"
           [(ngModel)]="valueView"
           (focus)="onFocus($event)"
@@ -50,16 +37,13 @@ function filterNumericKeys(event: KeyboardEvent) {
             [readonly]="readonly"
             [required]="required"
             [disabled]="disabled"
-            [ngClass]="inputClass"
             [(ngModel)]="valueView"
             (focus)="onFocus($event)"
             (blur)="onBlur($event)"
             (change)="onChange($event)"></textarea>
-        <div *ngFor="let error of errors" class="error">{{error}}</div>
-        </div>
-      </div>
-    </div>
+    </my-input-layout>
   `,
+  host: {'[class.my-focused]': 'focused', '(click)': 'onClick()'},
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => InputComponent), multi: true },
     { provide: NG_VALIDATORS, useExisting: forwardRef(() => InputComponent), multi: true }
@@ -84,8 +68,7 @@ export class InputComponent implements ControlValueAccessor, Validator, OnChange
   @Input() required: boolean;
   @Input() disabled: boolean;
   @Input() label: string;
-  @Input() inputClass: string;
-  @Input() inputNote: string;
+  @Input() note: string;
   @Input() name: string;
 
   @Input()
@@ -120,12 +103,15 @@ export class InputComponent implements ControlValueAccessor, Validator, OnChange
     this.valueChange.emit(this.value);
   }
 
-  @HostListener('click')
-  setFocus() {
-    this._renderer.invokeElementMethod(this._inputEl.nativeElement, 'focus');
-  }
-  hasFocus(): boolean {
+  get focused() {
     return this._focused;
+  }
+  set focused(focused: boolean) {
+    this._focused = focused;
+  }
+
+  onClick() {
+    this._renderer.invokeElementMethod(this._inputEl.nativeElement, 'focus');
   }
 
   @Input()
@@ -143,22 +129,20 @@ export class InputComponent implements ControlValueAccessor, Validator, OnChange
   @Output() blur = new EventEmitter<FocusEvent>();
   @Output() focus = new EventEmitter<FocusEvent>();
 
-  constructor(private _renderer: Renderer) { }
+  constructor(protected _renderer: Renderer) { }
 
   onBlur(event:FocusEvent) {
-    this._focused = false;
+    this.focused = false;
     this.onTouchedFn();
     this.blur.emit(event);
   }
 
   onFocus(event:FocusEvent) {
-    this._focused = true;
+    this.focused = true;
     this.focus.emit(event);
   }
 
-  onChange(event: Event) {
-  //
-  }
+  onChange(event: Event) {}
 
   @HostListener('keypress', ['$event'])
   keypress(event: KeyboardEvent) {

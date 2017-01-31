@@ -15,6 +15,7 @@ import { FormBuilder, NgModel, FormGroup } from '@angular/forms';
       required
       [label]="'Number input'"
       [errors]="displayErrors(num_ctrl)"
+      note="hello"
       ></my-input>
     <p>{{ numberInputValue }}</p>
     <p>Is valid? {{ num_ctrl.valid }}</p>
