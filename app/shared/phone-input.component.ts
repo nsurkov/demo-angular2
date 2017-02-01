@@ -1,13 +1,18 @@
 import {
-  Component, OnInit, AfterViewInit, forwardRef, Input, Output, ViewChildren, ElementRef, Renderer,
-  HostBinding, HostListener, EventEmitter, OnChanges, SimpleChange } from '@angular/core';
+  Component, forwardRef, Input, ElementRef, Renderer, OnChanges, SimpleChange
+} from '@angular/core';
 
 import {
-  AbstractControl, ControlValueAccessor, Validator,
-  NG_VALUE_ACCESSOR, NG_VALIDATORS } from '@angular/forms';
+  NG_VALUE_ACCESSOR, NG_VALIDATORS
+} from '@angular/forms';
 
-import {noop, identity, parseNumber, formatPhone, NUMBER_KEYS, filterNumericKeys, KEY_CODE} from './utils';
-import {MultiInputPart, MultiInputComponent} from './multi-input.component';
+import {
+  formatPhone
+} from './utils';
+
+import {
+  MultiInputPart, MultiInputComponent
+} from './multi-input.component';
 
 export class AreaCodeNumber extends MultiInputPart {
     public name = "areaCode";
@@ -32,38 +37,21 @@ export class ExtensionNumber extends MultiInputPart {
         return this.size === undefined || !this.value || this.value.length <= this.size;
     }
 }
-const PhoneNumberType = {
+
+export const PhoneNumberType = {
   Home:"home",
   Work:"Work"
 }
 
 @Component({
+  moduleId: module.id,
   selector: 'my-phone-input',
-  template: `
-    <my-input-layout [label]="label" [errors]="errors" [note]="note" [disabled]="disabled">
-      <div>
-        <template ngFor let-p [ngForOf]="parts" let-idx="index">
-          <input my-multi-input-part
-            [attr.maxlength]="p.size"
-            [attr.name]="p.name"
-            [readonly]="readonly"
-            [required]="required"
-            [disabled]="disabled"
-            [type]="p.getInputType(disabled)"
-            [(ngModel)]="p.value"
-            (focus)="onFocus($event)"
-            (blur)="onBlur($event)"
-            (ngModelChange)="onChange($event)"
-            (keydown)="onKey($event, idx)">
-          <span></span>
-        </template>
-      </div>
-    </my-input-layout>
-  `,
+  templateUrl: './multi-input.component.html',
   host: {'[class.my-focused]': 'focused', '(click)': 'onClick()'},
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => PhoneInputComponent), multi: true },
-    { provide: NG_VALIDATORS, useExisting: forwardRef(() => PhoneInputComponent), multi: true }
+    { provide: NG_VALIDATORS, useExisting: forwardRef(() => PhoneInputComponent), multi: true },
+    { provide: MultiInputComponent, useExisting: forwardRef(() => PhoneInputComponent)}
   ]
 })
 export class PhoneInputComponent extends MultiInputComponent implements OnChanges {
@@ -82,8 +70,8 @@ export class PhoneInputComponent extends MultiInputComponent implements OnChange
     return this.type === PhoneNumberType.Work;
   }
 
-  constructor(_renderer: Renderer, el: ElementRef) {
-    super(_renderer, el);
+  constructor(renderer: Renderer, el: ElementRef) {
+    super(renderer, el);
   }
 
   //OnChanges

@@ -1,0 +1,18 @@
+<my-input-layout [label]="label" [errors]="errors" [note]="note" [disabled]="disabled">
+  <div>
+    <template ngFor let-p [ngForOf]="parts" let-idx="index">
+      <input [myMultiInputPart] = "idx"
+        [attr.maxlength]="p.size"
+        [attr.name]="p.name"
+        [readonly]="readonly"
+        [required]="required"
+        [disabled]="disabled"
+        [type]="p.getInputType(disabled)"
+        [(ngModel)]="p.value"
+        (focus)="onFocus($event)"
+        (blur)="onBlur($event)"
+        (ngModelChange)="onChange($event)">
+      <span></span>
+    </template>
+  </div>
+</my-input-layout>
